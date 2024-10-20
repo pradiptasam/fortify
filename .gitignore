@@ -4,6 +4,10 @@ CMakeCache.txt
 CTestTestfile.cmake
 Makefile
 cmake_install.cmake
+Fortify-config-version.cmake
+Fortify-config.cmake
+Fortify-targets.cmake
+install_manifest.txt
 
 *.L
 *.a
