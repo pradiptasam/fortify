@@ -6,6 +6,19 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+# Try to find the Fypp executable
+find_program(FYPP_EXECUTABLE fypp)
+
+# Check if it was found
+if(NOT FYPP_EXECUTABLE)
+    message(FATAL_ERROR "Fypp not found. Please install Fypp or provide the path to the executable.")
+else()
+    message(STATUS "Found Fypp: ${FYPP_EXECUTABLE}")
+endif()
+
+# Make the Fypp executable available to the parent scope
+set(FYPP_EXECUTABLE ${FYPP_EXECUTABLE} CACHE STRING "Path to the Fypp executable")
+
 include(GNUInstallDirs)
 
 # Add the source directory
