@@ -3,7 +3,20 @@ file(GLOB SRC_FILES *.f90)
 set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -std=f2003")
 
 # Create the library from the source files
-add_library(Fortify STATIC ${SRC_FILES})
+# add_library(Fortify STATIC ${SRC_FILES})
+
+add_custom_command(
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/assert_equal.f90
+  COMMAND ${Python3_EXECUTABLE} ${FYPP_EXECUTABLE} ${CMAKE_SOURCE_DIR}/src/assert_equal.fypp ${CMAKE_CURRENT_BINARY_DIR}/assert_equal.f90
+  MAIN_DEPENDENCY ${CMAKE_SOURCE_DIR}/src/assert_equal.fypp
+  COMMENT "Generating Fortran assert_equal routines with Fypp"
+)
+
+# Include the generated file in the library
+add_library(Fortify
+  ${CMAKE_CURRENT_BINARY_DIR}/assert_equal.f90
+  ${CMAKE_SOURCE_DIR}/src/runner.f90
+)
 
 # Optionally, specify the properties of the library
 set(Fortran_MODULE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/mod")
