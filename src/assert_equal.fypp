@@ -1,5 +1,4 @@
 #:def assert_equal(type, suffix)
-
   subroutine assert_equal_${suffix}$(expected, actual, test_name)
       ${type}$, intent(in) :: expected, actual
       character(len=*), intent(in) :: test_name
@@ -16,7 +15,7 @@
   end subroutine assert_equal_${suffix}$
 #:enddef
 
-module test_assertions
+module check_assertions
     implicit none
 
     ! Define the generic interface for assert_equal
@@ -34,4 +33,4 @@ contains
     #:endcall
     #:endfor
 
-end module test_assertions
+end module check_assertions
