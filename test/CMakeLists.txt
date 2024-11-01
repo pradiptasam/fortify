@@ -10,6 +10,11 @@ file(GLOB TEST_FILES *.f90)
 # Create the executable for testing
 add_executable(test_fortify ${TEST_FILES} collect_tests.f90)
 
+# Set the runtime output directory for the test executable to be within the test folder
+set_target_properties(test_fortify PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+
 # Link the Fortify library with the test executable
 target_link_libraries(test_fortify Fortify)
 
