@@ -12,7 +12,7 @@ module test_routines
   end subroutine test_addition
 
   subroutine test_boolean()
-    call assert_true(.true., "test_boolean")
+    call assert_equal(.true., .true., "test_boolean")
   end subroutine test_boolean
 
 end module test_routines
