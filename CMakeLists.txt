@@ -6,6 +6,17 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+# include(FetchContent)
+#
+# # Fetch Fypp
+# FetchContent_Declare(
+#   fypp
+#   GIT_REPOSITORY https://github.com/aradi/fypp.git
+#   GIT_TAG 3.2  # Use the appropriate tag or branch
+# )
+#
+# FetchContent_MakeAvailable(fypp)
+
 # Try to find the Fypp executable
 find_program(FYPP_EXECUTABLE fypp)
 
