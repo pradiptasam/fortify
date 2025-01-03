@@ -1,14 +1,15 @@
-add_custom_command(
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/collect_tests.f90
-    COMMAND ${CMAKE_COMMAND} -E env python3 ${CMAKE_SOURCE_DIR}/utils/generate_collect_tests.py ${CMAKE_SOURCE_DIR}/test
-    DEPENDS ${CMAKE_SOURCE_DIR}/test/test_*.f90
-    COMMENT "Generating collect_tests.f90"
-)
+# add_custom_command(
+#     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/collect_tests.f90
+#     COMMAND ${CMAKE_COMMAND} -E env python3 ${CMAKE_SOURCE_DIR}/utils/generate_collect_tests.py ${CMAKE_SOURCE_DIR}/test
+#     DEPENDS ${CMAKE_SOURCE_DIR}/test/test_*.f90
+#     COMMENT "Generating collect_tests.f90"
+# )
 
-file(GLOB TEST_FILES *.f90)
+file(GLOB TEST_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.f90)
 
 # Create the executable for testing
-add_executable(test_fortify ${TEST_FILES} collect_tests.f90)
+# add_executable(test_fortify ${TEST_FILES} collect_tests.f90)
+add_executable(test_fortify ${TEST_FILES})
 
 # Set the runtime output directory for the test executable to be within the test folder
 set_target_properties(test_fortify PROPERTIES

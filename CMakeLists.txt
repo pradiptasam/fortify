@@ -6,6 +6,12 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+# Set the Fortran standard to 2008
+# set(CMAKE_Fortran_STANDARD 2008)
+message(STATUS "Fortran standard: ${CMAKE_Fortran_STANDARD}")
+#set(CMAKE_Fortran_STANDARD_REQUIRED OFF)
+# set(CMAKE_Fortran_EXTENSIONS OFF)
+
 # include(FetchContent)
 #
 # # Fetch Fypp
