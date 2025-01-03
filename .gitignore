@@ -8,6 +8,7 @@ Fortify-config-version.cmake
 Fortify-config.cmake
 Fortify-targets.cmake
 install_manifest.txt
+assert_equal.f90
 
 *.L
 *.a
@@ -20,4 +21,4 @@ install_manifest.txt
 /**/Testing/*
 /**/test/collect_tests.f90
 /**/bin/*
-
+test_fortify
