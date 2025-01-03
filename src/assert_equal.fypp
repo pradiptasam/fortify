@@ -1,36 +1,190 @@
 #:def assert_equal(type, suffix)
   subroutine assert_equal_${suffix}$(expected, actual, test_name)
-      ${type}$, intent(in) :: expected, actual
-      character(len=*), intent(in) :: test_name
+    ${type}$, intent(in) :: expected, actual
+    character(len=*), intent(in) :: test_name
 
-      #:if suffix == "logical"
-      if (expected .neqv. actual) then
-      #:else
-      if (expected /= actual) then
-      #:endif
-          print *, "FAIL: ", test_name, " - Expected: ", expected, " but got: ", actual
-      else
-          print *, "PASS: ", test_name
-      end if
+    #:if suffix == "logical"
+    if (expected .neqv. actual) then
+    #:else
+    if (expected /= actual) then
+    #:endif
+        print *, "FAIL: ", test_name, " - Expected: ", expected, " but got: ", actual
+    else
+        print *, "PASS: ", test_name
+    end if
   end subroutine assert_equal_${suffix}$
+
+#:enddef
+
+#:def assert_not_equal(type, suffix)
+  subroutine assert_not_equal_${suffix}$(expected, actual, test_name)
+    ${type}$, intent(in) :: expected, actual
+    character(len=*), intent(in) :: test_name
+
+    #:if suffix == "logical"
+    if (expected .neqv. actual) then
+    #:else
+    if (expected /= actual) then
+    #:endif
+        print *, "PASS: ", test_name
+    else
+        print *, "FAIL: ", test_name, " - Expected: ", expected, " but got: ", actual
+    end if
+  end subroutine assert_not_equal_${suffix}$
+
+#:enddef
+
+#:def assert_less_than(type, suffix)
+  subroutine assert_less_than_${suffix}$(val1, val2, test_name)
+    ${type}$, intent(in) :: val1, val2
+    character(len=*), intent(in) :: test_name
+
+    if (val1 < val2) then
+        print *, "PASS: ", test_name
+    else
+        print *, "FAIL: ", test_name, " - Expected less than ", val2, " but got: ", val1
+    end if
+  end subroutine assert_less_than_${suffix}$
+
+#:enddef
+
+#:def assert_greater_than(type, suffix)
+  subroutine assert_greater_than_${suffix}$(val1, val2, test_name)
+    ${type}$, intent(in) :: val1, val2
+    character(len=*), intent(in) :: test_name
+
+    if (val1 > val2) then
+        print *, "PASS: ", test_name
+    else
+        print *, "FAIL: ", test_name, " - Expected greater than ", val2, " but got: ", val1
+    end if
+  end subroutine assert_greater_than_${suffix}$
+
+#:enddef
+
+#:def assert_less_than_equal(type, suffix)
+  subroutine assert_less_than_equal_${suffix}$(val1, val2, test_name)
+    ${type}$, intent(in) :: val1, val2
+    character(len=*), intent(in) :: test_name
+
+    if (val1 <= val2) then
+        print *, "PASS: ", test_name
+    else
+        print *, "FAIL: ", test_name, " - Expected less than equal", val2, " but got: ", val1
+    end if
+  end subroutine assert_less_than_equal_${suffix}$
+
+#:enddef
+
+#:def assert_greater_than_equal(type, suffix)
+  subroutine assert_greater_than_equal_${suffix}$(val1, val2, test_name)
+    ${type}$, intent(in) :: val1, val2
+    character(len=*), intent(in) :: test_name
+
+    if (val1 >= val2) then
+        print *, "PASS: ", test_name
+    else
+        print *, "FAIL: ", test_name, " - Expected greater than equal", val2, " but got: ", val1
+    end if
+  end subroutine assert_greater_than_equal_${suffix}$
+
 #:enddef
 
 module check_assertions
-    implicit none
 
-    ! Define the generic interface for assert_equal
-    interface assert_equal
-        #:for suffix in ["integer", "real", "logical", "character_len_star"]
-        module procedure assert_equal_${suffix}$
-        #:endfor
-    end interface
+  USE, INTRINSIC :: ISO_FORTRAN_ENV, ONLY: sp => real32, &
+    &                                      dp => real64
+
+  implicit none
+
+  ! Define the generic interface for assert_equal
+  interface assert_equal
+    #:for suffix in ["integer", "real_sp", "real_dp", "logical", "character_len_star"]
+    module procedure assert_equal_${suffix}$
+    #:endfor
+  end interface
+
+  interface assert_not_equal
+    #:for suffix in ["integer", "real_sp", "real_dp", "logical", "character_len_star"]
+    module procedure assert_not_equal_${suffix}$
+    #:endfor
+  end interface
+
+  interface assert_less_than
+    #:for suffix in ["integer", "real_sp", "real_dp"]
+    module procedure assert_less_than_${suffix}$
+    #:endfor
+  end interface
+
+  interface assert_greater_than
+    #:for suffix in ["integer", "real_sp", "real_dp"]
+    module procedure assert_greater_than_${suffix}$
+    #:endfor
+  end interface
+
+  interface assert_less_than_equal
+    #:for suffix in ["integer", "real_sp", "real_dp"]
+    module procedure assert_less_than_equal_${suffix}$
+    #:endfor
+  end interface
+
+  interface assert_greater_than_equal
+    #:for suffix in ["integer", "real_sp", "real_dp"]
+    module procedure assert_greater_than_equal_${suffix}$
+    #:endfor
+  end interface
 
 contains
 
     ! Generate assert_equal subroutines for different types
-    #:for t, suffix in [["integer", "integer"], ["real", "real"], ["logical", "logical"], ["character(len=*)", "character_len_star"]]
+    #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"], ["logical", "logical"], ["character(len=*)", "character_len_star"]]
     #:call assert_equal(t, suffix)
     #:endcall
     #:endfor
+
+    #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"], ["logical", "logical"], ["character(len=*)", "character_len_star"]]
+    #:call assert_not_equal(t, suffix)
+    #:endcall
+    #:endfor
+
+    #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
+    #:call assert_less_than(t, suffix)
+    #:endcall
+    #:endfor
+
+    #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
+    #:call assert_greater_than(t, suffix)
+    #:endcall
+    #:endfor
+
+    #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
+    #:call assert_less_than_equal(t, suffix)
+    #:endcall
+    #:endfor
+
+    #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
+    #:call assert_greater_than_equal(t, suffix)
+    #:endcall
+    #:endfor
+
+    subroutine assert_true(condition, test_name)
+        logical, intent(in) :: condition
+        character(len=*), intent(in) :: test_name
+        if (.not. condition) then
+            print *, "FAIL:", test_name, "- Expected true but got false"
+        else
+            print *, "PASS:", test_name
+        end if
+    end subroutine assert_true
+
+    subroutine assert_false(condition, test_name)
+        logical, intent(in) :: condition
+        character(len=*), intent(in) :: test_name
+        if (condition) then
+            print *, "FAIL:", test_name, "- Expected false but got true"
+        else
+            print *, "PASS:", test_name
+        end if
+    end subroutine assert_false
 
 end module check_assertions
