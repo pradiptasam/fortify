@@ -1,7 +1,5 @@
 file(GLOB SRC_FILES *.f90)
 
-set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -std=f2003")
-
 # Create the library from the source files
 # add_library(Fortify STATIC ${SRC_FILES})
 
