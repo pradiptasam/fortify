@@ -17,7 +17,6 @@
   end subroutine assert_equal_${suffix}$
 
 #:enddef
-
 #:def assert_not_equal(type, suffix)
   subroutine assert_not_equal_${suffix}$(expected, actual, test_name, num_failures)
     ${type}$, intent(in) :: expected, actual
@@ -37,7 +36,6 @@
   end subroutine assert_not_equal_${suffix}$
 
 #:enddef
-
 #:def assert_less_than(type, suffix)
   subroutine assert_less_than_${suffix}$(val1, val2, test_name, num_failures)
     ${type}$, intent(in) :: val1, val2
@@ -53,7 +51,6 @@
   end subroutine assert_less_than_${suffix}$
 
 #:enddef
-
 #:def assert_greater_than(type, suffix)
   subroutine assert_greater_than_${suffix}$(val1, val2, test_name, num_failures)
     ${type}$, intent(in) :: val1, val2
@@ -69,7 +66,6 @@
   end subroutine assert_greater_than_${suffix}$
 
 #:enddef
-
 #:def assert_less_than_equal(type, suffix)
   subroutine assert_less_than_equal_${suffix}$(val1, val2, test_name, num_failures)
     ${type}$, intent(in) :: val1, val2
@@ -85,7 +81,6 @@
   end subroutine assert_less_than_equal_${suffix}$
 
 #:enddef
-
 #:def assert_greater_than_equal(type, suffix)
   subroutine assert_greater_than_equal_${suffix}$(val1, val2, test_name, num_failures)
     ${type}$, intent(in) :: val1, val2
@@ -101,7 +96,58 @@
   end subroutine assert_greater_than_equal_${suffix}$
 
 #:enddef
+#:def assert_array_near(type, suffix)
+    ! 1D array comparison
+    subroutine assert_array_near_${suffix}$_1d(array1, array2, tolerance, test_name, num_failures)
+        ${type}$, dimension(:), intent(in) :: array1, array2
+        ${type}$, intent(in) :: tolerance
+        character(len=*), intent(in) :: test_name
+        integer, intent(inout) :: num_failures
+        integer :: i
 
+        if (size(array1) /= size(array2)) then
+            print *, "FAIL:", test_name, "- Arrays have different sizes."
+            num_failures = num_failures + 1
+            return
+        end if
+
+        do i = 1, size(array1)
+            if (abs(array1(i) - array2(i)) > tolerance) then
+                print *, "FAIL:", test_name, "- Arrays differ at index", i, ": expected", array1(i), "but got", array2(i)
+                num_failures = num_failures + 1
+                return
+            end if
+        end do
+        print *, "PASS:", test_name
+    end subroutine assert_array_near_${suffix}$_1d
+
+    ! 2D array comparison
+    subroutine assert_array_near_${suffix}$_2d(array1, array2, tolerance, test_name, num_failures)
+        ${type}$, dimension(:,:), intent(in) :: array1, array2
+        ${type}$, intent(in) :: tolerance
+        character(len=*), intent(in) :: test_name
+        integer, intent(inout) :: num_failures
+        integer :: i, j
+
+        if (size(array1, 1) /= size(array2, 1) .or. size(array1, 2) /= size(array2, 2)) then
+            print *, "FAIL:", test_name, "- Arrays have different dimensions."
+            num_failures = num_failures + 1
+            return
+        end if
+
+        do i = 1, size(array1, 1)
+            do j = 1, size(array1, 2)
+                if (abs(array1(i, j) - array2(i, j)) > tolerance) then
+                    print *, "FAIL:", test_name, "- Arrays differ at index (", i, ",", j, "): expected", array1(i, j), "but got", array2(i, j)
+                    num_failures = num_failures + 1
+                    return
+                end if
+            end do
+        end do
+        print *, "PASS:", test_name
+    end subroutine assert_array_near_${suffix}$_2d
+
+#:enddef
 module check_assertions
 
   USE, INTRINSIC :: ISO_FORTRAN_ENV, ONLY: sp => real32, &
@@ -143,6 +189,13 @@ module check_assertions
   interface assert_greater_than_equal
     #:for suffix in ["integer", "real_sp", "real_dp"]
     module procedure assert_greater_than_equal_${suffix}$
+    #:endfor
+  end interface
+
+  interface assert_array_near
+    #:for suffix in ["real_sp", "real_dp"]
+    module procedure assert_array_near_${suffix}$_1d
+    module procedure assert_array_near_${suffix}$_2d
     #:endfor
   end interface
 
@@ -204,5 +257,10 @@ contains
             print *, "PASS:", test_name
         end if
     end subroutine assert_false
+
+    #:for t, suffix in [["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
+    #:call assert_array_near(t, suffix)
+    #:endcall
+    #:endfor
 
 end module check_assertions

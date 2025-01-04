@@ -5,6 +5,14 @@ program test_fortify
   implicit none
 
   integer :: num_failures=0
+  real(sp), dimension(3) :: array1_sp, array2_sp
+  real(dp), dimension(3) :: array1_dp, array2_dp
+  real(sp), dimension(2, 2) :: array2d1_sp, array2d2_sp
+  real(dp), dimension(2, 2) :: array2d1_dp, array2d2_dp
+  ! Tolerance values
+  real(sp) :: tolerance_sp = 0.01_sp
+  real(dp) :: tolerance_dp = 1.0e-6_dp
+
   ! Test cases for assert_equal
   call assert_equal(42, 42, "Integer Equal Test", num_failures)
   call assert_equal(3.14_dp, 3.14_dp, "Real_dp Equal Test", num_failures)
@@ -41,6 +49,35 @@ program test_fortify
 
   call assert_true(.true., "Logical True Test", num_failures)
   call assert_false(.false., "Logical False Test", num_failures)
+
+  ! Initialize single-precision 1D arrays
+  array1_sp = [1.0_sp, 2.0_sp, 3.0_sp]
+  array2_sp = [1.0_sp, 2.001_sp, 3.0_sp]
+
+  ! Initialize double-precision 1D arrays
+  array1_dp = [1.0_dp, 2.0_dp, 3.0_dp]
+  array2_dp = [1.0_dp, 2.0000001_dp, 3.0_dp]
+
+  ! Initialize single-precision 2D arrays
+  array2d1_sp = reshape([1.0_sp, 2.0_sp, 3.0_sp, 4.0_sp], shape=[2, 2])
+  array2d2_sp = reshape([1.0_sp, 2.001_sp, 3.0_sp, 4.0_sp], shape=[2, 2])
+
+  ! Initialize double-precision 2D arrays
+  array2d1_dp = reshape([1.0_dp, 2.0_dp, 3.0_dp, 4.0_dp], shape=[2, 2])
+  array2d2_dp = reshape([1.0_dp, 2.0000001_dp, 3.0_dp, 4.0_dp], shape=[2, 2])
+
+  ! Test 1D single-precision arrays
+  call assert_array_near(array1_sp, array2_sp, tolerance_sp, "1D SP Array Near Test", num_failures)
+
+  ! Test 1D double-precision arrays
+  call assert_array_near(array1_dp, array2_dp, tolerance_dp, "1D DP Array Near Test", num_failures)
+
+  ! Test 2D single-precision arrays
+  call assert_array_near(array2d1_sp, array2d2_sp, tolerance_sp, "2D SP Array Near Test", num_failures)
+
+  ! Test 2D double-precision arrays
+  call assert_array_near(array2d1_dp, array2d2_dp, tolerance_dp, "2D DP Array Near Test", num_failures)
+
 
   print *, "All tests completed!"
 
