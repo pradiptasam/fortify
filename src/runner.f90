@@ -53,18 +53,24 @@ module fortify_runner
   subroutine run_tests(ierr)
     integer, intent(inout) :: ierr
     type(node), pointer :: current
+    integer :: total_tests = 0
+
+    character(len=*), parameter :: RESET = char(27) // "[0m"
+    character(len=*), parameter :: RED = char(27) // "[31m"
+    character(len=*), parameter :: GREEN = char(27) // "[32m"
 
     current => head
     do while(associated(current))
       call current%test%test_function(ierr)
       current => current%next
+      total_tests = total_tests + 1
     end do
 
     if (ierr /= 0) then
-      print *, "Some tests failed"
-    else
-      print *, "All tests passed"
-    end if
+         print *, RED, ierr, " tests failed out of ", total_tests, RESET
+     else
+         print *, GREEN, "All tests passed", RESET
+     end if
 
   end subroutine run_tests
 
