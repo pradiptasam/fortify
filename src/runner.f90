@@ -2,14 +2,13 @@ module fortify_runner
   implicit none
 
   abstract interface
-  subroutine test_procedure()
-    ! integer, intent(out) :: iout
+  subroutine test_procedure(ierr)
+    integer, intent(inout) :: ierr
   end subroutine test_procedure
   end interface
   procedure(test_procedure), pointer :: test_function => null()
 
   type :: test_case
-    ! integer :: iout
     character(len=100) :: test_name
     ! contains
     procedure(test_procedure), pointer, nopass :: test_function => null()
@@ -51,14 +50,22 @@ module fortify_runner
 
   end subroutine register_test
 
-  subroutine run_tests()
+  subroutine run_tests(ierr)
+    integer, intent(inout) :: ierr
     type(node), pointer :: current
 
     current => head
     do while(associated(current))
-      call current%test%test_function()
+      call current%test%test_function(ierr)
       current => current%next
     end do
+
+    if (ierr /= 0) then
+      print *, "Some tests failed"
+    else
+      print *, "All tests passed"
+    end if
+
   end subroutine run_tests
 
 end module fortify_runner

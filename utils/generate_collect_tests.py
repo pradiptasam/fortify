@@ -35,8 +35,11 @@ def generate_collect_tests(directory, test_modules, test_routines):
 
         f.write("  implicit none\n\n")
 
+        f.write("  integer:: ierr=0\n\n")
         f.write("  interface\n")
-        f.write("    subroutine TestProcInterface()\n")
+        f.write("    subroutine TestProcInterface(ierr)\n")
+        f.write("      implicit none\n")
+        f.write("      integer, intent(inout) :: ierr\n")
         f.write("    end subroutine TestProcInterface\n")
         f.write("  end interface\n\n")
 
@@ -53,7 +56,7 @@ def generate_collect_tests(directory, test_modules, test_routines):
 
         f.write("\n")
         f.write("  ! Run all tests\n")
-        f.write("  call run_tests()\n\n")
+        f.write("  call run_tests(ierr)\n\n")
 
         f.write("end program collect_tests\n")
 
