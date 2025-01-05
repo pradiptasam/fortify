@@ -1,4 +1,5 @@
 module fortify_runner
+  use color_utils
   implicit none
 
   abstract interface
@@ -54,10 +55,7 @@ module fortify_runner
     integer, intent(inout) :: ierr
     type(node), pointer :: current
     integer :: total_tests = 0
-
-    character(len=*), parameter :: RESET = char(27) // "[0m"
-    character(len=*), parameter :: RED = char(27) // "[31m"
-    character(len=*), parameter :: GREEN = char(27) // "[32m"
+    character(len=20) :: ierr_str, total_tests_str
 
     current => head
     do while(associated(current))
@@ -66,11 +64,17 @@ module fortify_runner
       total_tests = total_tests + 1
     end do
 
+    ! Convert integers to strings
+    write(ierr_str, '(I0)') ierr
+    write(total_tests_str, '(I0)') total_tests
+
+    write(*,*) "----------------------------------------"
     if (ierr /= 0) then
-         print *, RED, ierr, " tests failed out of ", total_tests, RESET
-     else
-         print *, GREEN, "All tests passed", RESET
-     end if
+      call print_colored(trim(ierr_str) // " tests failed out of " // trim(total_tests_str), RED)
+    else
+      call print_colored("All " // trim(total_tests_str) // " tests passed", GREEN)
+    end if
+    write(*,*) "----------------------------------------"
 
   end subroutine run_tests
 

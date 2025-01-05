@@ -13,6 +13,7 @@ add_custom_command(
 # Include the generated file in the library
 add_library(Fortify
   ${CMAKE_CURRENT_BINARY_DIR}/assert_equal.f90
+  ${CMAKE_CURRENT_SOURCE_DIR}/../utils/color_utils.f90
   ${CMAKE_CURRENT_SOURCE_DIR}/runner.f90
 )
 
