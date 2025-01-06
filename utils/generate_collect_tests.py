@@ -28,7 +28,7 @@ def generate_collect_tests(directory, test_modules, test_routines):
     collect_file = "collect_tests.f90"
     with open(collect_file, "w") as f:
         f.write("program collect_tests\n")
-        f.write("  use fortify_runner\n")
+        f.write("  use fortify\n")
 
         for module in test_modules:
             f.write(f"  use {module}\n")
