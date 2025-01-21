@@ -2,11 +2,19 @@ import os
 import re
 import sys
 
-def find_test_routines(directory):
+def find_test_routines(directory, files):
     test_modules = []
     test_routines = {}
 
-    for filename in os.listdir(directory):
+    # if files is not Empty, then only consider those files
+    if files:
+        filenames = files
+    else:
+        filenames = os.listdir(directory)
+
+    print(f"Files: {filenames}")
+    for filepath in filenames:
+        filename=os.path.basename(filepath)
         routine_names = set()
         if filename.lower().startswith("test_") and filename.lower().endswith(".f90"):
             # module_name = filename[:-4]
@@ -69,17 +77,20 @@ def generate_collect_tests(directory, test_modules, test_routines):
 
 def main():
 
-    if len(sys.argv) != 2:
+    if len(sys.argv) == 1:
         print("Usage: python3 generate_collect_tests.py <test_directory>")
         sys.exit(1)
 
     test_directory = sys.argv[1]
+    test_files = []
+    if len(sys.argv) == 3:
+        test_files = sys.argv[2].split()
 
     if not os.path.isdir(test_directory):
         print(f"Error: Directory '{test_directory}' does not exist.")
         sys.exit(1)
 
-    test_modules, test_routines = find_test_routines(test_directory)
+    test_modules, test_routines = find_test_routines(test_directory, test_files)
     generate_collect_tests(test_directory, test_modules, test_routines)
 
 if __name__ == "__main__":
