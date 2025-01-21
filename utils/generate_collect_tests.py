@@ -9,9 +9,16 @@ def find_test_routines(directory):
     for filename in os.listdir(directory):
         routine_names = set()
         if filename.lower().startswith("test_") and filename.lower().endswith(".f90"):
-            module_name = filename[:-4]
+            # module_name = filename[:-4]
             with open(os.path.join(directory, filename), "r") as f:
                 content = f.read()
+                # Find the module name (case insensitive)
+                module_match = re.search(r'\bmodule\s+(\w+)', content, re.IGNORECASE)
+                if module_match:
+                    module_name = module_match.group(1)
+                else:
+                    print(f"Warning: No module found in {filename}, skipping.")
+                    continue
                 matches = re.findall(r'\bsubroutine\s+(test_\w+)', content)
                 unique_matches = [match for match in matches if match not in routine_names]
                 if unique_matches:
