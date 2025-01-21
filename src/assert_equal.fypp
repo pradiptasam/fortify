@@ -1,8 +1,7 @@
 #:def assert_equal(type, suffix)
-  subroutine assert_equal_${suffix}$(expected, actual, test_name, num_failures)
+  subroutine assert_equal_${suffix}$(expected, actual, test_name)
     ${type}$, intent(in) :: expected, actual
     character(len=*), intent(in) :: test_name
-    integer, intent(inout) :: num_failures
 
     #:if suffix == "logical"
     if (expected .neqv. actual) then
@@ -19,10 +18,9 @@
 
 #:enddef
 #:def assert_not_equal(type, suffix)
-  subroutine assert_not_equal_${suffix}$(expected, actual, test_name, num_failures)
+  subroutine assert_not_equal_${suffix}$(expected, actual, test_name)
     ${type}$, intent(in) :: expected, actual
     character(len=*), intent(in) :: test_name
-    integer, intent(inout) :: num_failures
 
     #:if suffix == "logical"
     if (expected .neqv. actual) then
@@ -39,10 +37,9 @@
 
 #:enddef
 #:def assert_less_than(type, suffix)
-  subroutine assert_less_than_${suffix}$(val1, val2, test_name, num_failures)
+  subroutine assert_less_than_${suffix}$(val1, val2, test_name)
     ${type}$, intent(in) :: val1, val2
     character(len=*), intent(in) :: test_name
-    integer, intent(inout) :: num_failures
 
     if (val1 < val2) then
         print *, "PASS: ", test_name
@@ -55,10 +52,9 @@
 
 #:enddef
 #:def assert_greater_than(type, suffix)
-  subroutine assert_greater_than_${suffix}$(val1, val2, test_name, num_failures)
+  subroutine assert_greater_than_${suffix}$(val1, val2, test_name)
     ${type}$, intent(in) :: val1, val2
     character(len=*), intent(in) :: test_name
-    integer, intent(inout) :: num_failures
 
     if (val1 > val2) then
         print *, "PASS: ", test_name
@@ -71,10 +67,9 @@
 
 #:enddef
 #:def assert_less_than_equal(type, suffix)
-  subroutine assert_less_than_equal_${suffix}$(val1, val2, test_name, num_failures)
+  subroutine assert_less_than_equal_${suffix}$(val1, val2, test_name)
     ${type}$, intent(in) :: val1, val2
     character(len=*), intent(in) :: test_name
-    integer, intent(inout) :: num_failures
 
     if (val1 <= val2) then
         print *, "PASS: ", test_name
@@ -87,10 +82,9 @@
 
 #:enddef
 #:def assert_greater_than_equal(type, suffix)
-  subroutine assert_greater_than_equal_${suffix}$(val1, val2, test_name, num_failures)
+  subroutine assert_greater_than_equal_${suffix}$(val1, val2, test_name)
     ${type}$, intent(in) :: val1, val2
     character(len=*), intent(in) :: test_name
-    integer, intent(inout) :: num_failures
 
     if (val1 >= val2) then
         print *, "PASS: ", test_name
@@ -104,11 +98,10 @@
 #:enddef
 #:def assert_array_near(type, suffix)
   ! 1D array comparison
-  subroutine assert_array_near_${suffix}$_1d(array1, array2, tolerance, test_name, num_failures)
+  subroutine assert_array_near_${suffix}$_1d(array1, array2, tolerance, test_name)
       ${type}$, dimension(:), intent(in) :: array1, array2
       ${type}$, intent(in) :: tolerance
       character(len=*), intent(in) :: test_name
-      integer, intent(inout) :: num_failures
       integer :: i
 
       if (size(array1) /= size(array2)) then
@@ -129,11 +122,10 @@
   end subroutine assert_array_near_${suffix}$_1d
 
   ! 2D array comparison
-  subroutine assert_array_near_${suffix}$_2d(array1, array2, tolerance, test_name, num_failures)
+  subroutine assert_array_near_${suffix}$_2d(array1, array2, tolerance, test_name)
       ${type}$, dimension(:,:), intent(in) :: array1, array2
       ${type}$, intent(in) :: tolerance
       character(len=*), intent(in) :: test_name
-      integer, intent(inout) :: num_failures
       integer :: i, j
 
       if (size(array1, 1) /= size(array2, 1) .or. size(array1, 2) /= size(array2, 2)) then
@@ -161,7 +153,7 @@ module check_assertions
   USE, INTRINSIC :: ISO_FORTRAN_ENV, ONLY: sp => real32, &
     &                                      dp => real64
 
-  USE fortify_runner, only : num_tests 
+  USE fortify_runner, only : num_tests, num_failures
 
   implicit none
 
@@ -242,10 +234,9 @@ contains
     #:endcall
     #:endfor
 
-    subroutine assert_true(condition, test_name, num_failures)
+    subroutine assert_true(condition, test_name)
         logical, intent(in) :: condition
         character(len=*), intent(in) :: test_name
-        integer, intent(inout) :: num_failures
 
         if (.not. condition) then
             print *, "FAIL:", test_name, "- Expected true but got false"
@@ -256,10 +247,9 @@ contains
         num_tests = num_tests + 1
     end subroutine assert_true
 
-    subroutine assert_false(condition, test_name, num_failures)
+    subroutine assert_false(condition, test_name)
         logical, intent(in) :: condition
         character(len=*), intent(in) :: test_name
-        integer, intent(inout) :: num_failures
 
         if (condition) then
             print *, "FAIL:", test_name, "- Expected false but got true"
