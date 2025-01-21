@@ -15,9 +15,6 @@ module fortify_runner
     procedure(test_procedure), pointer, nopass :: test_function => null()
   end type test_case
 
-  ! type(test_case), allocatable :: tests(:)
-  ! integer :: num_tests = 0
-  !
   type node
     type(test_case) :: test
     character(len=:), allocatable :: test_name
@@ -47,26 +44,22 @@ module fortify_runner
       tail => new_node
     end if
 
-    num_tests = num_tests + 1
-
-  end subroutine register_test
+      end subroutine register_test
 
   subroutine run_tests(ierr)
     integer, intent(inout) :: ierr
     type(node), pointer :: current
-    integer :: total_tests = 0
     character(len=20) :: ierr_str, total_tests_str
 
     current => head
     do while(associated(current))
       call current%test%test_function(ierr)
       current => current%next
-      total_tests = total_tests + 1
     end do
 
     ! Convert integers to strings
     write(ierr_str, '(I0)') ierr
-    write(total_tests_str, '(I0)') total_tests
+    write(total_tests_str, '(I0)') num_tests
 
     write(*,*) "----------------------------------------"
     if (ierr /= 0) then

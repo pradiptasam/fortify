@@ -14,6 +14,7 @@
     else
         print *, "PASS: ", test_name
     end if
+    num_tests = num_tests + 1
   end subroutine assert_equal_${suffix}$
 
 #:enddef
@@ -33,6 +34,7 @@
         print *, "FAIL: ", test_name, " - Expected: ", expected, " but got: ", actual
         num_failures = num_failures + 1
     end if
+    num_tests = num_tests + 1
   end subroutine assert_not_equal_${suffix}$
 
 #:enddef
@@ -48,6 +50,7 @@
         print *, "FAIL: ", test_name, " - Expected less than ", val2, " but got: ", val1
         num_failures = num_failures + 1
     end if
+    num_tests = num_tests + 1
   end subroutine assert_less_than_${suffix}$
 
 #:enddef
@@ -63,6 +66,7 @@
         print *, "FAIL: ", test_name, " - Expected greater than ", val2, " but got: ", val1
         num_failures = num_failures + 1
     end if
+    num_tests = num_tests + 1
   end subroutine assert_greater_than_${suffix}$
 
 #:enddef
@@ -78,6 +82,7 @@
         print *, "FAIL: ", test_name, " - Expected less than equal", val2, " but got: ", val1
         num_failures = num_failures + 1
     end if
+    num_tests = num_tests + 1
   end subroutine assert_less_than_equal_${suffix}$
 
 #:enddef
@@ -93,6 +98,7 @@
         print *, "FAIL: ", test_name, " - Expected greater than equal", val2, " but got: ", val1
         num_failures = num_failures + 1
     end if
+    num_tests = num_tests + 1
   end subroutine assert_greater_than_equal_${suffix}$
 
 #:enddef
@@ -119,6 +125,7 @@
             end if
         end do
         print *, "PASS:", test_name
+        num_tests = num_tests + 1
     end subroutine assert_array_near_${suffix}$_1d
 
     ! 2D array comparison
@@ -145,6 +152,7 @@
             end do
         end do
         print *, "PASS:", test_name
+        num_tests = num_tests + 1
     end subroutine assert_array_near_${suffix}$_2d
 
 #:enddef
@@ -152,6 +160,8 @@ module check_assertions
 
   USE, INTRINSIC :: ISO_FORTRAN_ENV, ONLY: sp => real32, &
     &                                      dp => real64
+
+  USE fortify_runner, only : num_tests 
 
   implicit none
 
@@ -243,6 +253,7 @@ contains
         else
             print *, "PASS:", test_name
         end if
+        num_tests = num_tests + 1
     end subroutine assert_true
 
     subroutine assert_false(condition, test_name, num_failures)
@@ -256,6 +267,7 @@ contains
         else
             print *, "PASS:", test_name
         end if
+        num_tests = num_tests + 1
     end subroutine assert_false
 
     #:for t, suffix in [["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
