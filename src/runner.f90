@@ -44,7 +44,7 @@ module fortify_runner
       tail => new_node
     end if
 
-      end subroutine register_test
+  end subroutine register_test
 
   subroutine run_tests(ierr)
     integer, intent(inout) :: ierr
