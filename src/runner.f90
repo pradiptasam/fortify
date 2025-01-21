@@ -23,6 +23,7 @@ module fortify_runner
 
   type(node), pointer :: head => null(), tail => null()
   integer :: num_tests = 0
+  integer :: num_failed = 0
 
   contains
 
@@ -58,7 +59,7 @@ module fortify_runner
     end do
 
     ! Convert integers to strings
-    write(ierr_str, '(I0)') ierr
+    write(ierr_str, '(I0)') num_failed
     write(total_tests_str, '(I0)') num_tests
 
     write(*,*) "----------------------------------------"
