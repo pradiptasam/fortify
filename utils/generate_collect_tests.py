@@ -19,7 +19,7 @@ def find_test_routines(directory):
                 else:
                     print(f"Warning: No module found in {filename}, skipping.")
                     continue
-                matches = re.findall(r'\bsubroutine\s+(test_\w+)', content)
+                matches = re.findall(r'\bsubroutine\s+(test_\w+)', content, re.IGNORECASE)
                 unique_matches = [match for match in matches if match not in routine_names]
                 if unique_matches:
                     test_modules.append(module_name)
