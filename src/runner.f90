@@ -24,7 +24,7 @@ module fortify_runner
 
   type(node), pointer :: head => null(), tail => null()
   integer :: num_tests = 0
-  integer :: num_failed = 0
+  integer :: num_failures = 0
 
   contains
 
@@ -59,11 +59,11 @@ module fortify_runner
     end do
 
     ! Convert integers to strings
-    write(ierr_str, '(I0)') num_failed
+    write(ierr_str, '(I0)') num_failures
     write(total_tests_str, '(I0)') num_tests
 
     write(*,*) "----------------------------------------"
-    if (num_failed /= 0) then
+    if (num_failures /= 0) then
       call print_colored(trim(ierr_str) // " tests failed out of " // trim(total_tests_str), RED)
     else
       call print_colored("All " // trim(total_tests_str) // " tests passed", GREEN)
