@@ -74,7 +74,7 @@
     if (val1 <= val2) then
         print *, "PASS: ", test_name
     else
-        print *, "FAIL: ", test_name, " - Expected less than equal", val2, " but got: ", val1
+        print *, "FAIL: ", test_name, " - Expected less than equal ", val2, " but got: ", val1
         num_failures = num_failures + 1
     end if
     num_tests = num_tests + 1
@@ -89,7 +89,7 @@
     if (val1 >= val2) then
         print *, "PASS: ", test_name
     else
-        print *, "FAIL: ", test_name, " - Expected greater than equal", val2, " but got: ", val1
+        print *, "FAIL: ", test_name, " - Expected greater than equal ", val2, " but got: ", val1
         num_failures = num_failures + 1
     end if
     num_tests = num_tests + 1
@@ -121,19 +121,19 @@
       integer :: i
 
       if (size(array1) /= size(array2)) then
-          print *, "FAIL:", test_name, "- Arrays have different sizes."
+          print *, "FAIL: ", test_name, "- Arrays have different sizes."
           num_failures = num_failures + 1
           return
       end if
 
       do i = 1, size(array1)
           if (abs(array1(i) - array2(i)) > tolerance) then
-              print *, "FAIL:", test_name, "- Arrays differ at index", i, ": expected", array1(i), "but got", array2(i)
+              print *, "FAIL: ", test_name, "- Arrays differ at index", i, ": expected", array1(i), " but got", array2(i)
               num_failures = num_failures + 1
               return
           end if
       end do
-      print *, "PASS:", test_name
+      print *, "PASS: ", test_name
       num_tests = num_tests + 1
   end subroutine assert_array_near_${suffix}$_1d
 
@@ -145,7 +145,7 @@
       integer :: i, j
 
       if (size(array1, 1) /= size(array2, 1) .or. size(array1, 2) /= size(array2, 2)) then
-          print *, "FAIL:", test_name, "- Arrays have different dimensions."
+          print *, "FAIL: ", test_name, "- Arrays have different dimensions."
           num_failures = num_failures + 1
           return
       end if
@@ -153,13 +153,13 @@
       do i = 1, size(array1, 1)
           do j = 1, size(array1, 2)
               if (abs(array1(i, j) - array2(i, j)) > tolerance) then
-                  print *, "FAIL:", test_name, "- Arrays differ at index (", i, ",", j, "): expected", array1(i, j), "but got", array2(i, j)
+                  print *, "FAIL: ", test_name, "- Arrays differ at index (", i, ",", j, "): expected", array1(i, j), " but got", array2(i, j)
                   num_failures = num_failures + 1
                   return
               end if
           end do
       end do
-      print *, "PASS:", test_name
+      print *, "PASS: ", test_name
       num_tests = num_tests + 1
   end subroutine assert_array_near_${suffix}$_2d
 
