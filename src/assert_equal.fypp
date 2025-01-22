@@ -96,6 +96,22 @@
   end subroutine assert_greater_than_equal_${suffix}$
 
 #:enddef
+#:def assert_almost_equal(type, suffix)
+  subroutine assert_almost_equal_${suffix}$(val1, val2, tolerance, test_name)
+    ${type}$, intent(in) :: val1, val2
+    ${type}$, intent(in) :: tolerance
+    character(len=*), intent(in) :: test_name
+
+    if (abs(val1 - val2) < tolerance) then
+        print *, "PASS: ", test_name
+    else
+        print *, "FAIL: ", test_name, " - Expected almost equal to ", val2, " but got: ", val1
+        num_failures = num_failures + 1
+    end if
+    num_tests = num_tests + 1
+  end subroutine assert_almost_equal_${suffix}$
+
+#:enddef
 #:def assert_array_near(type, suffix)
   ! 1D array comparison
   subroutine assert_array_near_${suffix}$_1d(array1, array2, tolerance, test_name)
@@ -194,6 +210,12 @@ module check_assertions
     #:endfor
   end interface
 
+  interface assert_almost_equal
+    #:for suffix in ["real_sp", "real_dp"]
+    module procedure assert_almost_equal_${suffix}$
+    #:endfor
+  end interface
+
   interface assert_array_near
     #:for suffix in ["real_sp", "real_dp"]
     module procedure assert_array_near_${suffix}$_1d
@@ -231,6 +253,11 @@ contains
 
     #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
     #:call assert_greater_than_equal(t, suffix)
+    #:endcall
+    #:endfor
+
+    #:for t, suffix in [["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
+    #:call assert_almost_equal(t, suffix)
     #:endcall
     #:endfor
 

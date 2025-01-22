@@ -46,6 +46,10 @@ program test_fortify
   call assert_greater_than_equal(3.1402_dp, 3.1401_dp, "Real_dp Greater Than Test")
   call assert_greater_than_equal(3.1402_sp, 3.1401_sp, "Real_sp Greater Than Test")
 
+  ! Test cases for assert_almost_equal
+  call assert_almost_equal(3.140201_dp, 3.1402011_dp, tolerance_dp, "Real_dp Greater Than Test")
+  call assert_almost_equal(3.1402_sp, 3.1401_sp, tolerance_sp, "Real_sp Greater Than Test")
+
   call assert_true(.true., "Logical True Test")
   call assert_false(.false., "Logical False Test")
 
