@@ -65,6 +65,7 @@ module fortify_runner
     write(*,*) "----------------------------------------"
     if (num_failures /= 0) then
       call print_colored(trim(ierr_str) // " tests failed out of " // trim(total_tests_str), RED)
+      call exit(1)
     else
       call print_colored("All " // trim(total_tests_str) // " tests passed", GREEN)
     end if
