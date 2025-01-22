@@ -80,8 +80,9 @@ def main():
 
     test_directory = sys.argv[1]
     test_files = []
-    if len(sys.argv) == 3:
-        test_files = sys.argv[2].split()
+    if len(sys.argv) > 2:
+        # test_files = sys.argv[2].split()
+        test_files = sys.argv[2:]
 
     if not os.path.isdir(test_directory):
         print(f"Error: Directory '{test_directory}' does not exist.")
