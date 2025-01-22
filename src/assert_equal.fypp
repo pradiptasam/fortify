@@ -8,10 +8,10 @@
     #:else
     if (expected /= actual) then
     #:endif
-        print *, "FAIL: ", test_name, " - Expected: ", expected, " but got: ", actual
-        num_failures = num_failures + 1
+      print *, "FAIL: ", test_name, " - Expected: ", expected, " but got: ", actual
+      num_failures = num_failures + 1
     else
-        print *, "PASS: ", test_name
+      print *, "PASS: ", test_name
     end if
     num_tests = num_tests + 1
   end subroutine assert_equal_${suffix}$
@@ -27,10 +27,10 @@
     #:else
     if (expected /= actual) then
     #:endif
-        print *, "PASS: ", test_name
+      print *, "PASS: ", test_name
     else
-        print *, "FAIL: ", test_name, " - Expected: ", expected, " but got: ", actual
-        num_failures = num_failures + 1
+      print *, "FAIL: ", test_name, " - Expected: ", expected, " but got: ", actual
+      num_failures = num_failures + 1
     end if
     num_tests = num_tests + 1
   end subroutine assert_not_equal_${suffix}$
@@ -42,10 +42,10 @@
     character(len=*), intent(in) :: test_name
 
     if (val1 < val2) then
-        print *, "PASS: ", test_name
+      print *, "PASS: ", test_name
     else
-        print *, "FAIL: ", test_name, " - Expected less than ", val2, " but got: ", val1
-        num_failures = num_failures + 1
+      print *, "FAIL: ", test_name, " - Expected less than ", val2, " but got: ", val1
+      num_failures = num_failures + 1
     end if
     num_tests = num_tests + 1
   end subroutine assert_less_than_${suffix}$
@@ -57,10 +57,10 @@
     character(len=*), intent(in) :: test_name
 
     if (val1 > val2) then
-        print *, "PASS: ", test_name
+      print *, "PASS: ", test_name
     else
-        print *, "FAIL: ", test_name, " - Expected greater than ", val2, " but got: ", val1
-        num_failures = num_failures + 1
+      print *, "FAIL: ", test_name, " - Expected greater than ", val2, " but got: ", val1
+      num_failures = num_failures + 1
     end if
     num_tests = num_tests + 1
   end subroutine assert_greater_than_${suffix}$
@@ -72,10 +72,10 @@
     character(len=*), intent(in) :: test_name
 
     if (val1 <= val2) then
-        print *, "PASS: ", test_name
+      print *, "PASS: ", test_name
     else
-        print *, "FAIL: ", test_name, " - Expected less than equal ", val2, " but got: ", val1
-        num_failures = num_failures + 1
+      print *, "FAIL: ", test_name, " - Expected less than equal ", val2, " but got: ", val1
+      num_failures = num_failures + 1
     end if
     num_tests = num_tests + 1
   end subroutine assert_less_than_equal_${suffix}$
@@ -87,10 +87,10 @@
     character(len=*), intent(in) :: test_name
 
     if (val1 >= val2) then
-        print *, "PASS: ", test_name
+      print *, "PASS: ", test_name
     else
-        print *, "FAIL: ", test_name, " - Expected greater than equal ", val2, " but got: ", val1
-        num_failures = num_failures + 1
+      print *, "FAIL: ", test_name, " - Expected greater than equal ", val2, " but got: ", val1
+      num_failures = num_failures + 1
     end if
     num_tests = num_tests + 1
   end subroutine assert_greater_than_equal_${suffix}$
@@ -103,10 +103,10 @@
     character(len=*), intent(in) :: test_name
 
     if (abs(val1 - val2) < tolerance) then
-        print *, "PASS: ", test_name
+      print *, "PASS: ", test_name
     else
-        print *, "FAIL: ", test_name, " - Expected almost equal to ", val2, " but got: ", val1
-        num_failures = num_failures + 1
+      print *, "FAIL: ", test_name, " - Expected almost equal to ", val2, " but got: ", val1
+      num_failures = num_failures + 1
     end if
     num_tests = num_tests + 1
   end subroutine assert_almost_equal_${suffix}$
@@ -115,52 +115,52 @@
 #:def assert_array_near(type, suffix)
   ! 1D array comparison
   subroutine assert_array_near_${suffix}$_1d(array1, array2, tolerance, test_name)
-      ${type}$, dimension(:), intent(in) :: array1, array2
-      ${type}$, intent(in) :: tolerance
-      character(len=*), intent(in) :: test_name
-      integer :: i
+    ${type}$, dimension(:), intent(in) :: array1, array2
+    ${type}$, intent(in) :: tolerance
+    character(len=*), intent(in) :: test_name
+    integer :: i
 
-      if (size(array1) /= size(array2)) then
-          print *, "FAIL: ", test_name, "- Arrays have different sizes."
-          num_failures = num_failures + 1
-          return
+    if (size(array1) /= size(array2)) then
+      print *, "FAIL: ", test_name, "- Arrays have different sizes."
+      num_failures = num_failures + 1
+      return
+    end if
+
+    do i = 1, size(array1)
+      if (abs(array1(i) - array2(i)) > tolerance) then
+        print *, "FAIL: ", test_name, "- Arrays differ at index", i, ": expected", array1(i), " but got", array2(i)
+        num_failures = num_failures + 1
+        return
       end if
-
-      do i = 1, size(array1)
-          if (abs(array1(i) - array2(i)) > tolerance) then
-              print *, "FAIL: ", test_name, "- Arrays differ at index", i, ": expected", array1(i), " but got", array2(i)
-              num_failures = num_failures + 1
-              return
-          end if
-      end do
-      print *, "PASS: ", test_name
-      num_tests = num_tests + 1
+    end do
+    print *, "PASS: ", test_name
+    num_tests = num_tests + 1
   end subroutine assert_array_near_${suffix}$_1d
 
   ! 2D array comparison
   subroutine assert_array_near_${suffix}$_2d(array1, array2, tolerance, test_name)
-      ${type}$, dimension(:,:), intent(in) :: array1, array2
-      ${type}$, intent(in) :: tolerance
-      character(len=*), intent(in) :: test_name
-      integer :: i, j
+    ${type}$, dimension(:,:), intent(in) :: array1, array2
+    ${type}$, intent(in) :: tolerance
+    character(len=*), intent(in) :: test_name
+    integer :: i, j
 
-      if (size(array1, 1) /= size(array2, 1) .or. size(array1, 2) /= size(array2, 2)) then
-          print *, "FAIL: ", test_name, "- Arrays have different dimensions."
+    if (size(array1, 1) /= size(array2, 1) .or. size(array1, 2) /= size(array2, 2)) then
+      print *, "FAIL: ", test_name, "- Arrays have different dimensions."
+      num_failures = num_failures + 1
+      return
+    end if
+
+    do i = 1, size(array1, 1)
+      do j = 1, size(array1, 2)
+        if (abs(array1(i, j) - array2(i, j)) > tolerance) then
+          print *, "FAIL: ", test_name, "- Arrays differ at index (", i, ",", j, "): expected", array1(i, j), " but got", array2(i, j)
           num_failures = num_failures + 1
           return
-      end if
-
-      do i = 1, size(array1, 1)
-          do j = 1, size(array1, 2)
-              if (abs(array1(i, j) - array2(i, j)) > tolerance) then
-                  print *, "FAIL: ", test_name, "- Arrays differ at index (", i, ",", j, "): expected", array1(i, j), " but got", array2(i, j)
-                  num_failures = num_failures + 1
-                  return
-              end if
-          end do
+        end if
       end do
-      print *, "PASS: ", test_name
-      num_tests = num_tests + 1
+    end do
+    print *, "PASS: ", test_name
+    num_tests = num_tests + 1
   end subroutine assert_array_near_${suffix}$_2d
 
 #:enddef
@@ -225,71 +225,71 @@ module check_assertions
 
 contains
 
-    ! Generate assert_equal subroutines for different types
-    #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"], ["logical", "logical"], ["character(len=*)", "character_len_star"]]
-    #:call assert_equal(t, suffix)
-    #:endcall
-    #:endfor
+  ! Generate assert_equal subroutines for different types
+  #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"], ["logical", "logical"], ["character(len=*)", "character_len_star"]]
+  #:call assert_equal(t, suffix)
+  #:endcall
+  #:endfor
 
-    #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"], ["logical", "logical"], ["character(len=*)", "character_len_star"]]
-    #:call assert_not_equal(t, suffix)
-    #:endcall
-    #:endfor
+  #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"], ["logical", "logical"], ["character(len=*)", "character_len_star"]]
+  #:call assert_not_equal(t, suffix)
+  #:endcall
+  #:endfor
 
-    #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
-    #:call assert_less_than(t, suffix)
-    #:endcall
-    #:endfor
+  #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
+  #:call assert_less_than(t, suffix)
+  #:endcall
+  #:endfor
 
-    #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
-    #:call assert_greater_than(t, suffix)
-    #:endcall
-    #:endfor
+  #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
+  #:call assert_greater_than(t, suffix)
+  #:endcall
+  #:endfor
 
-    #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
-    #:call assert_less_than_equal(t, suffix)
-    #:endcall
-    #:endfor
+  #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
+  #:call assert_less_than_equal(t, suffix)
+  #:endcall
+  #:endfor
 
-    #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
-    #:call assert_greater_than_equal(t, suffix)
-    #:endcall
-    #:endfor
+  #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
+  #:call assert_greater_than_equal(t, suffix)
+  #:endcall
+  #:endfor
 
-    #:for t, suffix in [["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
-    #:call assert_almost_equal(t, suffix)
-    #:endcall
-    #:endfor
+  #:for t, suffix in [["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
+  #:call assert_almost_equal(t, suffix)
+  #:endcall
+  #:endfor
 
-    subroutine assert_true(condition, test_name)
-        logical, intent(in) :: condition
-        character(len=*), intent(in) :: test_name
+  subroutine assert_true(condition, test_name)
+    logical, intent(in) :: condition
+    character(len=*), intent(in) :: test_name
 
-        if (.not. condition) then
-            print *, "FAIL:", test_name, "- Expected true but got false"
-            num_failures = num_failures + 1
-        else
-            print *, "PASS:", test_name
-        end if
-        num_tests = num_tests + 1
-    end subroutine assert_true
+    if (.not. condition) then
+      print *, "FAIL:", test_name, "- Expected true but got false"
+      num_failures = num_failures + 1
+    else
+      print *, "PASS:", test_name
+    end if
+    num_tests = num_tests + 1
+  end subroutine assert_true
 
-    subroutine assert_false(condition, test_name)
-        logical, intent(in) :: condition
-        character(len=*), intent(in) :: test_name
+  subroutine assert_false(condition, test_name)
+    logical, intent(in) :: condition
+    character(len=*), intent(in) :: test_name
 
-        if (condition) then
-            print *, "FAIL:", test_name, "- Expected false but got true"
-            num_failures = num_failures + 1
-        else
-            print *, "PASS:", test_name
-        end if
-        num_tests = num_tests + 1
-    end subroutine assert_false
+    if (condition) then
+      print *, "FAIL:", test_name, "- Expected false but got true"
+      num_failures = num_failures + 1
+    else
+      print *, "PASS:", test_name
+    end if
+    num_tests = num_tests + 1
+  end subroutine assert_false
 
-    #:for t, suffix in [["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
-    #:call assert_array_near(t, suffix)
-    #:endcall
-    #:endfor
+  #:for t, suffix in [["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
+  #:call assert_array_near(t, suffix)
+  #:endcall
+  #:endfor
 
 end module check_assertions
