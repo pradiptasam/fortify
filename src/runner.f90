@@ -3,16 +3,23 @@ module fortify_runner
   implicit none
 
   abstract interface
-  subroutine test_procedure()
-    ! integer, intent(out) :: iout
-  end subroutine test_procedure
+    subroutine test_procedure()
+    end subroutine test_procedure
   end interface
+
+  abstract interface
+    subroutine hook_procedure()
+    end subroutine hook_procedure
+  end interface
+
   procedure(test_procedure), pointer :: test_function => null()
 
+  ! Add hooks support
+  procedure(hook_procedure), pointer :: setup_hook => null()
+  procedure(hook_procedure), pointer :: teardown_hook => null()
+
   type :: test_case
-    ! integer :: iout
     character(len=100) :: test_name
-    ! contains
     procedure(test_procedure), pointer, nopass :: test_function => null()
   end type test_case
 
@@ -26,7 +33,18 @@ module fortify_runner
   integer :: num_tests = 0
   integer :: num_failures = 0
 
-  contains
+contains
+
+  ! Add hook registration subroutines
+  subroutine register_setup_hook(hook_function)
+    procedure(hook_procedure), pointer, intent(in) :: hook_function
+    setup_hook => hook_function
+  end subroutine register_setup_hook
+
+  subroutine register_teardown_hook(hook_function)
+    procedure(hook_procedure), pointer, intent(in) :: hook_function
+    teardown_hook => hook_function
+  end subroutine register_teardown_hook
 
   subroutine register_test(test_function, test_name)
     procedure(test_procedure), pointer, intent(in) :: test_function
@@ -52,11 +70,23 @@ module fortify_runner
     type(node), pointer :: current
     character(len=20) :: ierr_str, total_tests_str
 
+    ! Call setup hook if registered
+    if (associated(setup_hook)) then
+      write(*,*) "Running setup..."
+      call setup_hook()
+    end if
+
     current => head
     do while(associated(current))
       call current%test%test_function()
       current => current%next
     end do
+
+    ! Call teardown hook if registered
+    if (associated(teardown_hook)) then
+      write(*,*) "Running teardown..."
+      call teardown_hook()
+    end if
 
     ! Convert integers to strings
     write(ierr_str, '(I0)') num_failures
