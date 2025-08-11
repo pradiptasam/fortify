@@ -52,7 +52,7 @@ def find_test_routines(directory, files):
 
     return test_modules, test_routines, hook_functions
 
-def generate_collect_tests(directory, test_modules, test_routines):
+def generate_collect_tests(directory, test_modules, test_routines, hook_functions):
 
     collect_file = "collect_tests.f90"
     with open(collect_file, "w") as f:
@@ -125,3 +125,6 @@ def main():
 
     test_modules, test_routines, hook_functions = find_test_routines(test_directory, test_files)
     generate_collect_tests(test_directory, test_modules, test_routines, hook_functions)
+
+if __name__ == "__main__":
+    main()
