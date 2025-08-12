@@ -163,6 +163,34 @@
     num_tests = num_tests + 1
   end subroutine assert_array_near_${suffix}$_2d
 
+  ! 3D array comparison
+  subroutine assert_array_near_${suffix}$_3d(array1, array2, tolerance, test_name)
+    ${type}$, dimension(:,:,:), intent(in) :: array1, array2
+    ${type}$, intent(in) :: tolerance
+    character(len=*), intent(in) :: test_name
+    integer :: i, j, k
+
+    if (size(array1, 1) /= size(array2, 1) .or. size(array1, 2) /= size(array2, 2) .or. size(array1, 3) /= size(array2, 3)) then
+      print *, "FAIL: ", test_name, "- Arrays have different dimensions."
+      num_failures = num_failures + 1
+      return
+    end if
+
+    do i = 1, size(array1, 1)
+      do j = 1, size(array1, 2)
+        do k = 1, size(array1, 3)
+          if (abs(array1(i, j, k) - array2(i, j, k)) > tolerance) then
+            print *, "FAIL: ", test_name, "- Arrays differ at index (", i, ",", j, ",", k, "): expected", array1(i, j, k), " but got", array2(i, j, k)
+            num_failures = num_failures + 1
+            return
+          end if
+        end do
+      end do
+    end do
+    print *, "PASS: ", test_name
+    num_tests = num_tests + 1
+  end subroutine assert_array_near_${suffix}$_3d
+
 #:enddef
 module check_assertions
 
@@ -220,6 +248,7 @@ module check_assertions
     #:for suffix in ["real_sp", "real_dp"]
     module procedure assert_array_near_${suffix}$_1d
     module procedure assert_array_near_${suffix}$_2d
+    module procedure assert_array_near_${suffix}$_3d
     #:endfor
   end interface
 
