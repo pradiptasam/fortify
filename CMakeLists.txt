@@ -12,29 +12,18 @@ message(STATUS "Fortran standard: ${CMAKE_Fortran_STANDARD}")
 #set(CMAKE_Fortran_STANDARD_REQUIRED OFF)
 # set(CMAKE_Fortran_EXTENSIONS OFF)
 
-# include(FetchContent)
-#
+include(FetchContent)
+
 # # Fetch Fypp
-# FetchContent_Declare(
-#   fypp
-#   GIT_REPOSITORY https://github.com/aradi/fypp.git
-#   GIT_TAG 3.2  # Use the appropriate tag or branch
-# )
-#
-# FetchContent_MakeAvailable(fypp)
+FetchContent_Declare(
+  fypp
+  GIT_REPOSITORY https://github.com/aradi/fypp.git
+  GIT_TAG 3.2  # Use the appropriate tag or branch
+)
 
-# Try to find the Fypp executable
-find_program(FYPP_EXECUTABLE fypp)
+FetchContent_MakeAvailable(fypp)
 
-# Check if it was found
-if(NOT FYPP_EXECUTABLE)
-    message(FATAL_ERROR "Fypp not found. Please install Fypp or provide the path to the executable.")
-else()
-    message(STATUS "Found Fypp: ${FYPP_EXECUTABLE}")
-endif()
-
-# Make the Fypp executable available to the parent scope
-set(FYPP_EXECUTABLE ${FYPP_EXECUTABLE} CACHE STRING "Path to the Fypp executable")
+set(FYPP_EXECUTABLE ${fypp_SOURCE_DIR}/bin/fypp)
 
 include(GNUInstallDirs)
 
