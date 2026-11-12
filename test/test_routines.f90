@@ -81,6 +81,18 @@ program test_fortify
   ! Test 2D double-precision arrays
   call assert_array_near(array2d1_dp, array2d2_dp, tolerance_dp, "2D DP Array Near Test")
 
+  ! Test cases for assert_array_equal
+  call assert_array_equal([1, 2, 3], [1, 2, 3], "1D Integer Array Equal Test")
+  call assert_array_equal(array1_sp, array1_sp, "1D SP Array Equal Test")
+  call assert_array_equal(array1_dp, array1_dp, "1D DP Array Equal Test")
+  call assert_array_equal([.true., .false.], [.true., .false.], "1D Logical Array Equal Test")
+  call assert_array_equal(array2d1_sp, array2d1_sp, "2D SP Array Equal Test")
+  call assert_array_equal(array2d1_dp, array2d1_dp, "2D DP Array Equal Test")
+  call assert_array_equal(reshape([1, 2, 3, 4, 5, 6, 7, 8], [2, 2, 2]), &
+                          reshape([1, 2, 3, 4, 5, 6, 7, 8], [2, 2, 2]), "3D Integer Array Equal Test")
+  call assert_array_equal(reshape(array2d1_dp, [2, 1, 2, 1]), &
+                          reshape(array2d1_dp, [2, 1, 2, 1]), "4D DP Array Equal Test")
+
 
   print *, "All tests completed!"
 

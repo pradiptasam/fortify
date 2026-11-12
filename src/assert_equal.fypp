@@ -222,6 +222,35 @@
     num_tests = num_tests + 1
   end subroutine assert_array_near_${suffix}$_4d
 #:enddef
+#:def assert_array_equal(type, suffix, rank)
+  #:set dims = "(" + ", ".join([":"] * rank) + ")"
+  #:set at_idx = "(" + ", ".join(["idx({})".format(r) for r in range(1, rank + 1)]) + ")"
+  #:set neq = ".neqv." if suffix == "logical" else "/="
+  ! ${rank}$D exact array comparison
+  subroutine assert_array_equal_${suffix}$_${rank}$d(array1, array2, test_name)
+    ${type}$, dimension${dims}$, intent(in) :: array1, array2
+    character(len=*), intent(in) :: test_name
+    integer :: idx(${rank}$)
+
+    num_tests = num_tests + 1
+
+    if (any(shape(array1) /= shape(array2))) then
+      print *, "FAIL: ", test_name, "- Arrays have different shapes: ", shape(array1), " vs ", shape(array2)
+      num_failures = num_failures + 1
+      return
+    end if
+
+    if (any(array1 ${neq}$ array2)) then
+      idx = maxloc(merge(1, 0, array1 ${neq}$ array2))
+      print *, "FAIL: ", test_name, "- Arrays differ in", count(array1 ${neq}$ array2), "elements, first at index", idx, &
+               ": expected", array1${at_idx}$, " but got", array2${at_idx}$
+      num_failures = num_failures + 1
+    else
+      print *, "PASS: ", test_name
+    end if
+  end subroutine assert_array_equal_${suffix}$_${rank}$d
+
+#:enddef
 module check_assertions
 
   USE, INTRINSIC :: ISO_FORTRAN_ENV, ONLY: sp => real32, &
@@ -280,6 +309,14 @@ module check_assertions
     module procedure assert_array_near_${suffix}$_2d
     module procedure assert_array_near_${suffix}$_3d
     module procedure assert_array_near_${suffix}$_4d
+    #:endfor
+  end interface
+
+  interface assert_array_equal
+    #:for suffix in ["integer", "real_sp", "real_dp", "logical"]
+    #:for rank in range(1, 5)
+    module procedure assert_array_equal_${suffix}$_${rank}$d
+    #:endfor
     #:endfor
   end interface
 
@@ -350,6 +387,12 @@ contains
   #:for t, suffix in [["real(dp)", "real_dp"], ["real(sp)", "real_sp"]]
   #:call assert_array_near(t, suffix)
   #:endcall
+  #:endfor
+
+  #:for t, suffix in [["integer", "integer"], ["real(dp)", "real_dp"], ["real(sp)", "real_sp"], ["logical", "logical"]]
+  #:for rank in range(1, 5)
+  $:assert_array_equal(t, suffix, rank)
+  #:endfor
   #:endfor
 
 end module check_assertions
