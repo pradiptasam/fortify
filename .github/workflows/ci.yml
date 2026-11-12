@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: ${{ matrix.os }} / gfortran-${{ matrix.version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        version: [12, 13, 14]
+        include:
+          - os: macos-latest
+            version: 14
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: fortran-lang/setup-fortran@v1
+        with:
+          compiler: gcc
+          version: ${{ matrix.version }}
+
+      - name: Configure
+        run: >
+          cmake -S . -B build
+          -DCMAKE_BUILD_TYPE=Debug
+          -DCMAKE_Fortran_COMPILER=${{ env.FC }}
+          -DCMAKE_Fortran_FLAGS="-Wall -fcheck=all -fbacktrace"
+          -DENABLE_TESTING=ON
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Install
+        run: cmake --install build --prefix "${{ github.workspace }}/install"
