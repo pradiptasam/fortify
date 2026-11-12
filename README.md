@@ -177,8 +177,9 @@ gfortran -o test_runner collect_tests.f90 -lFortify
 | Function | Description | Supported Dimensions |
 |----------|-------------|---------------------|
 | `assert_array_near(array1, array2, tolerance, test_name)` | Tests arrays are approximately equal | 1D, 2D, 3D, 4D |
+| `assert_array_equal(array1, array2, test_name)` | Tests arrays are exactly equal (integer, real(sp), real(dp), logical) | 1D, 2D, 3D, 4D |
 
-Arrays must have the same dimensions and all elements must be within the specified tolerance.
+Arrays must have the same dimensions. For `assert_array_near` all elements must be within the specified tolerance; for `assert_array_equal` all elements must be identical.
 
 ## Data Types
 
