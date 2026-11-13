@@ -1,5 +1,6 @@
 # Checks the --files mode of generate_collect_tests.py: only the listed files
 # are collected, and the hooks are taken from the fortify_manager.f90 among them.
+# The teardown hook checks that every test of the listed files ran.
 set(COLLECT_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/fortify_manager.f90
     ${CMAKE_CURRENT_SOURCE_DIR}/test_collect_a.f90

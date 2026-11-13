@@ -3,6 +3,15 @@ import re
 import sys
 import argparse
 
+# Anchored at the start of a line, so that neither "END SUBROUTINE" without a
+# name nor the words in a comment are taken for a declaration.
+MODULE_PATTERN = re.compile(r'^[ \t]*module[ \t]+(?!procedure\b)(\w+)',
+                            re.IGNORECASE | re.MULTILINE)
+SUBROUTINE_PATTERN = re.compile(
+    r'^[ \t]*(?:(?:pure|impure|elemental|recursive|module)[ \t]+)*'
+    r'subroutine[ \t]+(\w+)',
+    re.IGNORECASE | re.MULTILINE)
+
 def find_test_routines(test_files, hooks_file, enable_hooks):
     test_modules = []
     test_routines = {}
@@ -20,7 +29,7 @@ def find_test_routines(test_files, hooks_file, enable_hooks):
             with open(filepath, "r") as f:
                 content = f.read()
                 # Find the module name (case insensitive)
-                module_match = re.search(r'\bmodule\s+(\w+)', content, re.IGNORECASE)
+                module_match = MODULE_PATTERN.search(content)
                 if module_match:
                     module_name = module_match.group(1)
                 else:
@@ -28,7 +37,7 @@ def find_test_routines(test_files, hooks_file, enable_hooks):
                     continue
 
                 # Find test subroutines only
-                all_matches = re.findall(r'\bsubroutine\s+(\w+)', content, re.IGNORECASE)
+                all_matches = SUBROUTINE_PATTERN.findall(content)
                 for match in all_matches:
                     # Only look for test routines (not hooks)
                     if match.lower().startswith('test_'):
@@ -49,12 +58,12 @@ def find_test_routines(test_files, hooks_file, enable_hooks):
             with open(fortify_manager_path, "r") as f:
                 content = f.read()
                 # Find the module name
-                module_match = re.search(r'\bmodule\s+(\w+)', content, re.IGNORECASE)
+                module_match = MODULE_PATTERN.search(content)
                 if module_match:
                     hook_module_name = module_match.group(1)
                     
                     # Find all subroutines
-                    all_matches = re.findall(r'\bsubroutine\s+(\w+)', content, re.IGNORECASE)
+                    all_matches = SUBROUTINE_PATTERN.findall(content)
                     for match in all_matches:
                         # Check if it's a hook function
                         if any(hook in match.lower() for hook in hook_patterns):
