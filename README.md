@@ -98,6 +98,14 @@ Use the Python script to automatically discover and collect tests:
 python generate_collect_tests.py /path/to/test/directory
 ```
 
+To collect only some files, for example the tests of the components that are
+built, list them instead of giving a directory. Files whose names do not start
+with `test_` are skipped:
+
+```bash
+python generate_collect_tests.py --files test_a.f90 test_b.f90 fortify_manager.f90
+```
+
 This generates `collect_tests.f90` which:
 - Discovers all `test_*.f90` files
 - Extracts test subroutines (those starting with `test_`)
@@ -131,6 +139,9 @@ Enable hooks when generating the test collection:
 ```bash
 python generate_collect_tests.py /path/to/test/directory --enable-setup-hooks
 ```
+
+With `--files`, the hooks are taken from the `fortify_manager.f90` among the
+listed files. Use `--hooks-file` to name another file.
 
 ### Running Tests
 

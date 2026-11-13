@@ -21,3 +21,5 @@ target_link_libraries(test_fortify Fortify)
 
 # Add the test
 add_test(NAME FortifyTest COMMAND test_fortify)
+
+add_subdirectory(collect)
