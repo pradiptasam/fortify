@@ -16,6 +16,7 @@ assert_equal.f90
 *.so
 *.json
 /**/*.mod
+__pycache__/
 
 
 /**/Testing/*
